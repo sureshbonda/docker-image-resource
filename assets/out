@@ -114,8 +114,16 @@ if [ -n "$build" ]; then
 
 elif [ -n "$load_file" ]; then
   if [ -n "$load_repository" ]; then
-    docker load -i "$load_file"
-    docker tag "${load_repository}:${load_tag}" "${repository}:${tag_name}"
+    if [ -n "$load_tag" ]; then
+      docker load -i "$load_file"
+      docker tag "${load_repository}:${load_tag}" "${repository}:${tag_name}"
+		elif [ -n "$tag_params" ]; then
+      docker load -i "$load_file"
+      docker tag "${load_repository}:${tag_name}" "${repository}:${tag_name}"
+    else
+      echo "must specify load_tag or tag param"
+      exit 1
+    fi
   else
     echo "must specify load_repository param"
     exit 1
